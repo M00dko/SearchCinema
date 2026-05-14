@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VFX Research Dashboard</title>
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: #10182b;
+      --panel-2: #131d33;
+      --stroke: #1c2943;
+      --text: #e8f0ff;
+      --muted: #8fa1c9;
+      --accent: #6f5bff;
+      --accent-2: #3cc8ff;
+      --good: #45d483;
+      --warn: #ffb45c;
+      --danger: #ff6a8d;
+      --radius: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at -10% -20%, #1a2450 0%, transparent 60%),
+        radial-gradient(700px 450px at 105% -10%, #10244b 0%, transparent 55%),
+        linear-gradient(180deg, #060a14, #070b16);
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0c1222, #0b1020);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 18px 14px;
+      min-height: calc(100vh - 36px);
+      position: sticky;
+      top: 18px;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 18px;
+      font-size: 18px;
+    }
+
+    .brand span { color: #7fa2ff; }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #b4c4e8;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 10px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      font-size: 14px;
+    }
+
+    .nav a:hover, .nav a.active {
+      color: var(--text);
+      background: #141f39;
+      border-color: #243457;
+    }
+
+    .side-card {
+      background: #101a31;
+      border: 1px solid #213257;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .main {
+      display: grid;
+      gap: 16px;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, #0e162c, #0c1427);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: linear-gradient(180deg, #121d37, #101a2f);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+
+    .kpi small {
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .kpi strong {
+      font-size: 27px;
+      font-weight: 700;
+    }
+
+    .kpi .delta {
+      float: right;
+      font-size: 12px;
+      color: var(--good);
+      margin-top: 6px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1.25fr 0.85fr;
+      gap: 14px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, #0f182e, #0d1528);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: 86px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #1b2945;
+    }
+
+    .project:last-child { border-bottom: 0; }
+
+    .thumb {
+      height: 56px;
+      border-radius: 10px;
+      border: 1px solid #2a3c62;
+      background:
+        linear-gradient(115deg, rgba(111,91,255,0.45), rgba(60,200,255,0.15)),
+        #142342;
+    }
+
+    .project b { display: block; margin-bottom: 3px; }
+    .project span { color: var(--muted); font-size: 13px; }
+
+    .tag {
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 5px 9px;
+      border: 1px solid #2c3f65;
+      color: #cfd8f6;
+      white-space: nowrap;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #1b2945;
+    }
+
+    .list-item:last-child { border-bottom: 0; }
+
+    .list-item small { color: var(--muted); }
+
+    .up { color: var(--good); font-size: 12px; }
+    .warn { color: var(--warn); }
+    .down { color: var(--danger); }
+
+    .footer-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .footer-kpis .panel {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .footer-kpis b {
+      display: block;
+      font-size: 22px;
+      margin-top: 6px;
+    }
+
+    .muted { color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 1200px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .content { grid-template-columns: 1fr; }
+      .footer-kpis { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { min-height: auto; position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">VFX <span>RESEARCH</span></div>
+      <nav class="nav">
+        <a class="active" href="#">Обзор</a>
+        <a href="#">Проекты</a>
+        <a href="#">Источники</a>
+        <a href="#">ИИ-сканирование</a>
+        <a href="#">Настройки</a>
+        <a href="#">Отчеты</a>
+      </nav>
+      <div class="side-card">
+        <strong style="color:#dce8ff;display:block;margin-bottom:8px;">ИИ-сканирование</strong>
+        Периодичность: ежедневно в 06:00<br />
+        Источников: 45<br />
+        Ключевых слов: 86
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div class="title">
+          <h1>Обзор</h1>
+          <p>Актуальная картина по проектам российского кино</p>
+        </div>
+        <div class="muted">Последнее обновление: сегодня, 09:40</div>
+      </section>
+
+      <section class="kpis">
+        <article class="kpi">
+          <small>Новых проектов</small>
+          <strong>24</strong>
+          <span class="delta">+26%</span>
+        </article>
+        <article class="kpi">
+          <small>Всего в работе</small>
+          <strong>132</strong>
+          <span class="delta">+12%</span>
+        </article>
+        <article class="kpi">
+          <small>Стадия съёмок</small>
+          <strong>38</strong>
+          <span class="delta">+8%</span>
+        </article>
+        <article class="kpi">
+          <small>Релизы скоро</small>
+          <strong>17</strong>
+          <span class="delta warn">+6%</span>
+        </article>
+      </section>
+
+      <section class="content">
+        <article class="panel">
+          <h2>Новые проекты <small class="muted">24</small></h2>
+          <div class="project">
+            <div class="thumb"></div>
+            <div><b>Метро 2035</b><span>Фантастика, приключения</span></div>
+            <span class="tag">VFX</span>
+          </div>
+          <div class="project">
+            <div class="thumb"></div>
+            <div><b>Князь Владимир</b><span>Исторический, драма</span></div>
+            <span class="tag">VFX</span>
+          </div>
+          <div class="project">
+            <div class="thumb"></div>
+            <div><b>Сказки Лукоморья</b><span>Фэнтези, семейный</span></div>
+            <span class="tag">CGI</span>
+          </div>
+          <div class="project">
+            <div class="thumb"></div>
+            <div><b>Чёрное небо</b><span>Военный, драма</span></div>
+            <span class="tag">VFX</span>
+          </div>
+        </article>
+
+        <div style="display:grid;gap:14px;">
+          <article class="panel">
+            <h2>Источники</h2>
+            <div class="list">
+              <div class="list-item"><span>Фонд кино</span><small class="up">+20%</small></div>
+              <div class="list-item"><span>Минкультуры РФ</span><small class="up">+15%</small></div>
+              <div class="list-item"><span>Бюллетень прокатчика</span><small class="up">+10%</small></div>
+              <div class="list-item"><span>Кино-Театр.Ру</span><small class="up">+5%</small></div>
+              <div class="list-item"><span>Российская газета</span><small class="up">+3%</small></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Релизы скоро</h2>
+            <div class="list">
+              <div class="list-item"><span>Сто лет тому вперед</span><small>24 мая 2024</small></div>
+              <div class="list-item"><span>Мастер и Маргарита</span><small>7 июня 2024</small></div>
+              <div class="list-item"><span>Волшебник Изумрудного города</span><small>21 июня 2024</small></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="footer-kpis">
+        <article class="panel"><span class="muted">Просканировано страниц</span><b>18 247</b></article>
+        <article class="panel"><span class="muted">Найдено упоминаний</span><b>127</b></article>
+        <article class="panel"><span class="muted">Новых проектов</span><b>24</b></article>
+        <article class="panel"><span class="muted">Следующий запуск</span><b>Завтра, 06:00</b></article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

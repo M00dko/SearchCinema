@@ -1,0 +1,12 @@
+{
+  "name": "vfx-research-workspace",
+  "private": true,
+  "description": "Корень воркспейса: приложение лежит в vfx-dashboard",
+  "scripts": {
+    "dev": "npm run dev --prefix vfx-dashboard",
+    "build": "npm run build --prefix vfx-dashboard",
+    "preview": "npm run preview --prefix vfx-dashboard",
+    "lint": "npm run lint --prefix vfx-dashboard",
+    "install:app": "npm install --prefix vfx-dashboard"
+  }
+}
